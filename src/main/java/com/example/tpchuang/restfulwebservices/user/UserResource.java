@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,12 +44,16 @@ public class UserResource {
    * @return the user with the specified ID, or null if no such user exists
    */
   @GetMapping(path = "/users/{id}")
-  public User getUser(@PathVariable int id) {
+  public EntityModel<User> getUser(@PathVariable int id) {
     User user = userDaoService.get(id);
     if (user == null) {
       throw new UserNotFoundException("id: " + id);
     }
-    return user;
+    EntityModel<User> entityModel = EntityModel.of(user);
+    WebMvcLinkBuilder link = WebMvcLinkBuilder.linkTo(
+        WebMvcLinkBuilder.methodOn(this.getClass()).findAllUsers());
+    entityModel.add(link.withRel("all-users"));
+    return entityModel;
   }
 
   /**

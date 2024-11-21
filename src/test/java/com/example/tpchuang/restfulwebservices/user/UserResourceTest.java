@@ -52,7 +52,8 @@ class UserResourceTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name").value(user.name()))
         .andExpect(jsonPath("$.birthDate").value(
-            user.birthDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+            user.birthDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+        .andExpect(jsonPath("$._links.all-users").exists());
   }
 
   @Test
