@@ -1,6 +1,9 @@
 package com.example.tpchuang.restfulwebservices.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
@@ -8,7 +11,10 @@ import java.time.LocalDate;
 /**
  * Represents a user with an ID, name, and birthdate.
  */
-public record User(Integer id,
+@Entity(name = "user_details")
+public record User(@Id
+                   @GeneratedValue
+                   Integer id,
                    @Size(min = 2, message = ERROR_NAME_SIZE)
                    String name,
                    @Past(message = ERROR_INVALID_BIRTHDATE)
