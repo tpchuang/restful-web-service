@@ -36,7 +36,7 @@ class UserResourceTest {
         new User(2, "Jane Doe", LocalDate.of(1985, 2, 2)));
     when(userDaoService.findAll()).thenReturn(users);
 
-    mockMvc.perform(get("/users"))
+    mockMvc.perform(get("/v0/users"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(2)))
         .andExpect(jsonPath("$[0].name").value("John Doe"))
@@ -48,11 +48,11 @@ class UserResourceTest {
     User user = new User(1, "John Wow", LocalDate.of(1970, 7, 7));
     when(userDaoService.get(1)).thenReturn(user);
 
-    mockMvc.perform(get("/users/1"))
+    mockMvc.perform(get("/v0/users/1"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.name").value(user.name()))
+        .andExpect(jsonPath("$.name").value(user.getName()))
         .andExpect(jsonPath("$.birthDate").value(
-            user.birthDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
+            user.getBirthDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
         .andExpect(jsonPath("$._links.all-users").exists());
   }
 
@@ -60,7 +60,7 @@ class UserResourceTest {
   void getUser_ShouldReturnNotFound() throws Exception {
     when(userDaoService.get(999)).thenReturn(null);
 
-    mockMvc.perform(get("/users/999"))
+    mockMvc.perform(get("/v0/users/999"))
         .andExpect(status().isNotFound());
   }
 
@@ -72,18 +72,18 @@ class UserResourceTest {
 
     String userJson = "{\"name\":\"Alice Smith\",\"birthDate\":\"1990-03-03\"}";
 
-    mockMvc.perform(post("/users")
+    mockMvc.perform(post("/v0/users")
             .contentType(MediaType.APPLICATION_JSON)
             .content(userJson))
         .andExpect(status().isCreated())
-        .andExpect(header().string("Location", "http://localhost/users/3"));
+        .andExpect(header().string("Location", "http://localhost/v0/users/3"));
   }
 
   @Test
   void deleteUser() throws Exception {
     doNothing().when(userDaoService).deleteById(1);
 
-    mockMvc.perform(delete("/users/1"))
+    mockMvc.perform(delete("/v0/users/1"))
         .andExpect(status().isOk());
   }
 }

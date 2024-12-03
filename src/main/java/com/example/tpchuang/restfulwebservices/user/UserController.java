@@ -1,11 +1,10 @@
 package com.example.tpchuang.restfulwebservices.user;
 
+import com.example.tpchuang.restfulwebservices.jpa.UserRepository;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,40 +20,36 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  */
 @RestController
 @RequiredArgsConstructor
-public class UserResource {
+public class UserController {
 
   private static final String APPLICATION_X_YAML = "application/x-yaml";
 
-  private final UserDaoService userDaoService;
+  private final UserRepository userRepository;
 
   /**
    * Retrieves all users.
    *
    * @return a list of all users
    */
-  @GetMapping(path = "/v0/users")
+  @GetMapping(path = "/users")
   public List<User> findAllUsers() {
-    return userDaoService.findAll();
+    return userRepository.findAll();
   }
 
   /**
    * Retrieves a user by their ID.
    *
    * @param id the ID of the user to retrieve
-   * @return an HAL EntityModel containing the user with the specified ID
+   * @return the user with the specified ID
    * @throws UserNotFoundException if no user with the specified ID exists
    */
-  @GetMapping(path = "/v0/users/{id}")
-  public EntityModel<User> getUser(@PathVariable int id) {
-    User user = userDaoService.get(id);
+  @GetMapping(path = "/users/{id}")
+  public User getUser(@PathVariable int id) {
+    User user = userRepository.findById(id).orElse(null);
     if (user == null) {
       throw new UserNotFoundException("id: " + id);
     }
-    EntityModel<User> entityModel = EntityModel.of(user);
-    WebMvcLinkBuilder link = WebMvcLinkBuilder.linkTo(
-        WebMvcLinkBuilder.methodOn(this.getClass()).findAllUsers());
-    entityModel.add(link.withRel("all-users"));
-    return entityModel;
+    return user;
   }
 
   /**
@@ -63,9 +58,9 @@ public class UserResource {
    * @param user the user to create. User ID will be assigned.
    * @return a ResponseEntity with the location of the created user
    */
-  @PostMapping(path = "/v0/users", consumes = {MediaType.APPLICATION_JSON_VALUE, APPLICATION_X_YAML})
+  @PostMapping(path = "/users", consumes = {MediaType.APPLICATION_JSON_VALUE, APPLICATION_X_YAML})
   public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-    User savedUser = userDaoService.save(user);
+    User savedUser = userRepository.save(user);
     URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
         .buildAndExpand(savedUser.getId()).toUri();
     return ResponseEntity.created(location).build();
@@ -76,9 +71,9 @@ public class UserResource {
    *
    * @param id the ID of the user to delete
    */
-  @DeleteMapping(path = "/v0/users/{id}")
+  @DeleteMapping(path = "/users/{id}")
   public void deleteUser(@PathVariable int id) {
-    userDaoService.deleteById(id);
+    userRepository.deleteById(id);
   }
 
 }

@@ -1,3 +1,4 @@
+-- H2 database initialization
 insert into user_details (id, name, birth_date)
 values (10001, 'Tristan', current_date());
 insert into user_details (id, name, birth_date)

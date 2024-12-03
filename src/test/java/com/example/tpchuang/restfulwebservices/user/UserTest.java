@@ -26,9 +26,9 @@ class UserTest {
   void testUserCreation() {
     User user = new User(1, "John Doe", LocalDate.of(1990, 1, 1));
 
-    assertThat(user.id()).isEqualTo(1);
-    assertThat(user.name()).isEqualTo("John Doe");
-    assertThat(user.birthDate()).isEqualTo(LocalDate.of(1990, 1, 1));
+    assertThat(user.getId()).isEqualTo(1);
+    assertThat(user.getName()).isEqualTo("John Doe");
+    assertThat(user.getBirthDate()).isEqualTo(LocalDate.of(1990, 1, 1));
   }
 
   @Test
@@ -36,9 +36,9 @@ class UserTest {
     User user = new User(1, "John Doe", LocalDate.of(1990, 1, 1));
     User newUser = user.withId(2);
 
-    assertThat(newUser.id()).isEqualTo(2);
-    assertThat(newUser.name()).isEqualTo(user.name());
-    assertThat(newUser.birthDate()).isEqualTo(user.birthDate());
+    assertThat(newUser.getId()).isEqualTo(2);
+    assertThat(newUser.getName()).isEqualTo(user.getName());
+    assertThat(newUser.getBirthDate()).isEqualTo(user.getBirthDate());
   }
 
   @Test

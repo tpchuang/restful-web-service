@@ -26,7 +26,7 @@ class UserDaoServiceTest {
   void testGetUserById() {
     User user = userDaoService.get(1);
     assertThat(user).isNotNull();
-    assertThat(user.id()).isEqualTo(1);
+    assertThat(user.getId()).isEqualTo(1);
   }
 
   @Test
@@ -34,9 +34,9 @@ class UserDaoServiceTest {
     User newUser = new User(0, "Jane Doe", LocalDate.of(1995, 5, 15));
     User savedUser = userDaoService.save(newUser);
 
-    assertThat(savedUser.id()).isEqualTo(4);
-    assertThat(savedUser.name()).isEqualTo(newUser.name());
-    assertThat(savedUser.birthDate()).isEqualTo(newUser.birthDate());
+    assertThat(savedUser.getId()).isEqualTo(4);
+    assertThat(savedUser.getName()).isEqualTo(newUser.getName());
+    assertThat(savedUser.getBirthDate()).isEqualTo(newUser.getBirthDate());
   }
 
   @Test

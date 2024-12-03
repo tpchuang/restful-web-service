@@ -40,7 +40,7 @@ public class UserDaoService {
    * @return the user with the specified ID, or null if no such user exists
    */
   public User get(int id) {
-    return users.stream().filter(user -> user.id() == id).findFirst().orElse(null);
+    return users.stream().filter(user -> user.getId() == id).findFirst().orElse(null);
   }
 
   /**
@@ -50,7 +50,7 @@ public class UserDaoService {
    * @return the saved user with an assigned ID
    */
   public User save(User user) {
-    user = user.withId(lastUserId++);
+    user.setId(lastUserId++);
     users.add(user);
     return user;
   }
@@ -61,6 +61,6 @@ public class UserDaoService {
    * @param id the ID of the user to delete
    */
   public void deleteById(int id) {
-    users.removeIf(user -> user.id() == id);
+    users.removeIf(user -> user.getId() == id);
   }
 }
