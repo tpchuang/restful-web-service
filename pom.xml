@@ -26,6 +26,7 @@
   </scm>
   <properties>
     <java.version>21</java.version>
+    <docker.image.prefix>tpchuang3721</docker.image.prefix>
   </properties>
   <dependencies>
     <dependency>
@@ -129,6 +130,40 @@
             </exclude>
           </excludes>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.45.1</version>
+        <configuration>
+          <!-- use local/private registry as example -->
+          <registry>localhost:5000</registry>
+          <verbose>true</verbose>
+          <images>
+            <image>
+              <name>${docker.image.prefix}/${project.artifactId}</name>
+              <build>
+                <dockerFileDir>${project.basedir}</dockerFileDir>
+                <assembly>
+                  <descriptorRef>artifact</descriptorRef>
+                </assembly>
+                <tags>
+                  <tag>${project.version}</tag>
+                </tags>
+              </build>
+            </image>
+          </images>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>install</phase>
+            <goals>
+              <goal>build</goal>
+              <goal>push</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
